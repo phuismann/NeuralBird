@@ -29,7 +29,8 @@ def eval_genomes(genomes, config):
 
      # print score
      print('The top score was:', top_score)
-     fitness_vals.append(fitness)
+     if SCORE < 10000:
+        fitness_vals.append(SCORE)
 
 
 

@@ -28,5 +28,3 @@ class pipe:
             return True
         else:
             return False
-
-

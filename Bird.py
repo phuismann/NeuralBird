@@ -1,11 +1,12 @@
 import sys, pygame, neat
+import numpy as np
 
 
 class bird:
     height = 600
     width = 400
     gravity = 1
-    lift = -50
+    lift = -60
     yStart = 250
 
 
@@ -22,11 +23,19 @@ class bird:
         self.dead = False;
         self.distance = 0
         self.distance_obst = 0
-        self.input = [0, 0, 0, 0,0,0]#self.input
+        self.input = [0, 0, 0, 0,0,0,0,0]#self.input
         self.score = 0
+        self.distance_treat_x=0
+        self.distance_treat_y = 0
+        self.food = 0
+        self.rnd_color1 = np.random.randint(0, 100)
+        self.rnd_color2 = np.random.randint(0, 100)
+        self.rnd_color3 = np.random.randint(0, 100)
+
     def show(self):
         if self.dead == False:
-            pygame.draw.circle(self.screen,(255,255,255),[self.x, self.y],15)
+
+            pygame.draw.circle(self.screen,(255-self.rnd_color1 ,255-self.rnd_color2 ,255-self.rnd_color3 ),[self.x, self.y],15+(self.food*2))
             #self.screen.blit(pygame.image.load('assets/redbird-downflap.png'),(self.x, self.y))
         else:
             pygame.draw.circle(self.screen, (0, 0, 0), [-100, -100], 15)
@@ -44,7 +53,7 @@ class bird:
 
     def up(self):
         self.velocity += self.lift
-        self.score-= 1 #lot of jumping no good
+        self.score -= 1
 
 
     def hits(self,pipes):
@@ -57,7 +66,7 @@ class bird:
     def think(self,pipes):
         min_dist = 1000000
         closest_pipe = pipes[0]
-        pipeClose = lambda piipe:  piipe.x -self.x
+        pipeClose = lambda piipe:  piipe.x - self.x
         for pipe in pipes:
 
             if pipeClose(pipe) <= min_dist and pipeClose(pipe) > 0:
@@ -73,13 +82,41 @@ class bird:
         self.input[2] = (self.y-closest_pipe.top)/self.height
         self.input[3] = (closest_pipe.bottom-self.y)/self.height
         self.input[4] = closest_pipe.mid_distance/self.width
-        self.input[5] = self.distance_obst/100 #Distance to closest pipe
-
+        self.input[5] = self.distance_obst/100
+        self.input[6] = self.distance_treat_y / 100
+        self.input[7] = self.distance_treat_x / 100
 
     def decide(self):
         output = self.neural_network.activate(self.input)
         if output[0] > 0.5:
             self.up()
+
+
+    def eat(self,treat):
+        range = 20
+        if self.x <= treat.x+range and self.x > treat.x-range and self.y <= treat.y +range and self.y > treat.y-range :
+            self.score=+10
+            print("eaten")
+            self.food +=1
+            return True
+    def see_treat(self,treats):
+        min_dist_y = 1000000
+        for treat in treats:
+            treatClosey = lambda treeat: treat.y - self.y
+            if treatClosey(treat) <= min_dist_y:
+                min_dist_y = treatClosey(treat)
+
+                self.distance_treat_y = min_dist_y
+
+        treatClosex = lambda treeat:  treat.x - self.x
+        min_dist_x =10000
+        for treat in treats:
+
+            if treatClosex(treat) <= min_dist_x and treatClosex(treat) > 0:
+
+                min_dist_x = treatClosex(treat)
+                self.distance_treat_x = min_dist_x
+                print(self.distance_treat_x)
 
 
 
