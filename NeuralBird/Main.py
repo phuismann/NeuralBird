@@ -7,27 +7,10 @@ SCORE = 0
 GENERATION = 0
 MAX_FITNESS = 0
 BEST_GENOME = 0
-
-# def eval_genomes(genomes, config):
-#      i = 0
-#      global SCORE
-#      global MAX_FITNESS
-#      global BEST_GENOME
-#      global GENERATION
-#      GENERATION +=1
-#
-#      for genome_id, genome in genomes:
-#          i = 0
-#          x,y = Game.game(genome,config,SCORE) #game Returns fitness
-#          genome.fitness =y[genome_id]
-#          if genome.fitness >= MAX_FITNESS:
-#              MAX_FITNESS = genome.fitness
-#              BEST_GENOME = genome
-#          SCORE = 0
-#          i += 1
-#          print(MAX_FITNESS,SCORE)
+TOP_SCORE = 0
 
 def eval_genomes(genomes, config):
+     global TOP_SCORE
      # Play game and get results
      idx, genomes = zip(*genomes) # What does this do?
 
@@ -44,11 +27,15 @@ def eval_genomes(genomes, config):
          genomes.fitness = -1 if fitness == 0 else fitness
          if top_score < score:
              top_score = score
+         if TOP_SCORE < score:
+             TOP_SCORE = score
 
      # print score
      print('The top score was:', top_score)
-     fitness_vals.append(fitness)
-
+     if score < 10000:
+        fitness_vals.append(TOP_SCORE)
+     else:
+        fitness_vals.append(10000)
 
 
 
@@ -65,7 +52,7 @@ pop.add_reporter(neat.StdOutReporter(True))
 stats = neat.StatisticsReporter()
 pop.add_reporter(stats)
 
-winner = pop.run(eval_genomes, 100)
+winner = pop.run(eval_genomes, 50)
 
 x = np.linspace(0,len(fitness_vals),len(fitness_vals))
 sns.lineplot(x=x,y=fitness_vals)

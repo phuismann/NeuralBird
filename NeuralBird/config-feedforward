@@ -5,14 +5,14 @@
 [NEAT]
 fitness_criterion      = max
 fitness_threshold      = 500000
-no_fitness_termination = False
+no_fitness_termination = True
 pop_size               = 60
 reset_on_extinction    = 0
 
 [DefaultGenome]
 # node activation options
 activation_default      = sigmoid
-activation_mutate_rate  = 0.01
+activation_mutate_rate  = 0.001
 activation_options      = relu
 
 # node aggregation options
@@ -39,18 +39,18 @@ conn_delete_prob        = 0.5
 
 # connection enable options
 enabled_default         = True
-enabled_mutate_rate     = 0.01
+enabled_mutate_rate     = 0.0001
 
 feed_forward            = True
-initial_connection      = full
+initial_connection      = full_direct
 
 # node add/remove rates
 node_add_prob           = 0.2
 node_delete_prob        = 0.2
 
 # network parameters
-num_hidden              = 1
-num_inputs              = 6
+num_hidden              = 2
+num_inputs              = 9
 num_outputs             = 1
 
 # node response options
@@ -80,5 +80,5 @@ max_stagnation       = 20
 species_elitism      = 2
 
 [DefaultReproduction]
-elitism            = 4
-survival_threshold = 0.1
+elitism            = 2
+survival_threshold = 0.2
