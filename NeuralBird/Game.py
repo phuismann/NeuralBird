@@ -5,7 +5,10 @@ import Treat
 import neat
 import numpy as np
 
-def game(genomes, config, score):
+
+
+
+def game(genomes, config, val_arr):
     pygame.init()
     pygame.font.init()
     clock = pygame.time.Clock()
@@ -46,7 +49,9 @@ def game(genomes, config, score):
         myfont = pygame.font.SysFont('Comic Sans MS', 30)
         textsurface = myfont.render("Treats: "+str(eaten_treats), False, (255, 255, 255))
         screen.blit(textsurface, (0, 550))
-
+        myfont = pygame.font.SysFont('Comic Sans MS', 30)
+        textsurface = myfont.render("Gen: "+str(val_arr[2]), False, (255, 255, 255))
+        screen.blit(textsurface, (width-100, 550))
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -55,6 +60,7 @@ def game(genomes, config, score):
         if timer % 150 == 0:
             pipes.append(Pipe.pipe())
             if np.random.randint(3,10)>2:
+                treats.append(Treat.treat())
                 treats.append(Treat.treat())
 
         for treat in treats:
@@ -84,12 +90,12 @@ def game(genomes, config, score):
 
             for treat in treats:
                 eaten = bird.eat(treat)
-                if treat.x < 0 or eaten:
+                if treat.x < 0 or eaten or bird.power>200:
                     treats.remove(treat)
                 if eaten:
                     eaten_treats +=1
             bird.distance = game_score
-            if bird.hits(pipes) == True or bird.power <=0 or bird.power > 120:
+            if bird.hits(pipes) == True or bird.power <=0:
                 bird.dead = True
                 if bird.dead == True:
                     genome_info.append(bird.genome)
@@ -104,10 +110,10 @@ def game(genomes, config, score):
 
 
         clock.tick(1000)
-
+        game_score += 1
         pygame.display.update()
         screen.fill((0, 0, 0))
-        game_score +=1
+
 
     pygame.quit()
 

@@ -9,12 +9,17 @@ MAX_FITNESS = 0
 BEST_GENOME = 0
 TOP_SCORE = 0
 
+val_arr = [SCORE,MAX_FITNESS,GENERATION]
+
 def eval_genomes(genomes, config):
      global TOP_SCORE
+     global GENERATION
+     val_arr = [TOP_SCORE, TOP_SCORE, GENERATION]
+
      # Play game and get results
      idx, genomes = zip(*genomes) # What does this do?
 
-     genoinf,scoreinf = Game.game(genomes,config,SCORE) #game Returns fitness
+     genoinf,scoreinf = Game.game(genomes,config,val_arr) #game Returns fitness
 
 
      # Calculate fitness and top score
@@ -32,17 +37,18 @@ def eval_genomes(genomes, config):
 
      # print score
      print('The top score was:', top_score)
-     if score < 10000:
-        fitness_vals.append(TOP_SCORE)
-     else:
-        fitness_vals.append(10000)
+     GENERATION += 1
+
+     fitness_vals.append(TOP_SCORE)
+     mean_fit_vals.append(np.mean(scoreinf))
+
 
 
 
 #Start of actualy program:
 
 fitness_vals = []
-
+mean_fit_vals = []
 
 config = neat.Config(neat.DefaultGenome, neat.DefaultReproduction,
                          neat.DefaultSpeciesSet, neat.DefaultStagnation,
@@ -52,11 +58,17 @@ pop.add_reporter(neat.StdOutReporter(True))
 stats = neat.StatisticsReporter()
 pop.add_reporter(stats)
 
-winner = pop.run(eval_genomes, 50)
+winner = pop.run(eval_genomes, 10)
 
-x = np.linspace(0,len(fitness_vals),len(fitness_vals))
-sns.lineplot(x=x,y=fitness_vals)
+
+
+
+x = np.linspace(0,len(mean_fit_vals),len(mean_fit_vals))
+fig2 = sns.lineplot(x=x,y=mean_fit_vals)
+plt.xlabel("Generation")
+plt.ylabel("Mean Fitness")
 plt.show()
+
 
 print(stats)
 

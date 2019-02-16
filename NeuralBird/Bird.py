@@ -35,7 +35,6 @@ class bird:
 
     def show(self):
         if self.dead == False:
-            print(self.power/100)
             pygame.draw.circle(self.screen,(255-self.rnd_color1 ,255-self.rnd_color2 ,255-self.rnd_color3 ),[self.x, self.y],max(int(15*self.power/100),3))
             #self.screen.blit(pygame.image.load('assets/redbird-downflap.png'),(self.x, self.y))
         else:
@@ -101,6 +100,8 @@ class bird:
             self.score=+10
             self.food +=1
             self.power += 10
+
+
             return True
     def see_treat(self,treats):
         min_dist_y = 1000000

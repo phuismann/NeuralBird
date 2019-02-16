@@ -15,7 +15,7 @@ class treat:
         self.y = self.height / 2 +np.random.randint(0,50)
 
     def show(self):  # draws two rectangles one top one bot
-        pygame.draw.circle(self.screen,(255,255,0),[int(self.x), int(self.y)],15)
+        pygame.draw.circle(self.screen,(255,255,0),[int(self.x), int(self.y)],13)
 
 
     def update(self):
